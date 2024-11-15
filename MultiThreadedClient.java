@@ -85,12 +85,16 @@ public class MultiThreadedClient {
     }
 
     private static String sendRequest(String serverAddress, int port, String request) {
+        StringBuilder output = new StringBuilder();
         try (Socket socket = new Socket(serverAddress, port);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-
+            String line;
             out.println(request);
-            return in.readLine();
+            while ((line = in.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+            return output.toString();
         } catch (IOException e) {
             return "Error communicating with server: " + e.getMessage();
         }
